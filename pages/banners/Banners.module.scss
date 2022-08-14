@@ -1,0 +1,17 @@
+.btn_add {
+  margin: 20px;
+  text-align: right;
+}
+.banners {
+  .image_wrapper {
+    position: relative;
+    img{
+        width: 100%;
+    }
+    button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    }
+  }
+}

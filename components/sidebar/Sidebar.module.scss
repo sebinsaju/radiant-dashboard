@@ -1,0 +1,25 @@
+.sidebar{
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgb(231 231 231);
+    width: 300px;
+    .logo{
+        padding: 20px 40px;
+        img{
+            width: 100%;
+        }
+    }
+    .menus{
+        border-top: 3px solid #d1d1d1;
+        .menu{
+            padding:10px 20px;
+            cursor: pointer;
+            a{
+                display: block
+                ;
+            }
+        }
+    }
+}

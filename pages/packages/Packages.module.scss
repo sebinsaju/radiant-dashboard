@@ -1,0 +1,15 @@
+.packages{
+    .btn_add{
+        text-align: right;
+        margin: 20px;
+    }
+    .package{
+        padding: 20px;
+        border-bottom: 1px solid black;
+        .title{
+            font-weight: 500;
+            font-size: 18px;
+            padding-bottom: 20px;
+        }
+    }
+}

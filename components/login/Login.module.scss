@@ -1,0 +1,34 @@
+.login {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 9;
+  background-color: rgb(121, 167, 246);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .form_wrapper {
+    max-width: 400px;
+    padding: 50px 20px;
+    border: 1px solid #fff;
+    width: 100%;
+    text-align: center;
+    .title {
+      padding-bottom: 50px;
+      text-align: center;
+      font-size: 25px;
+      font-weight: 600;
+      color: #fff;
+    }
+    button {
+      margin-top: 30px;
+      background-color: #fff;
+      outline: none;
+      border: none;
+      padding: 5px 10px;
+      font-size: 16px;
+    }
+  }
+}
