@@ -11,19 +11,33 @@ const Packages = () => {
   const [price, setPrice] = useState("");
   const [items, setItems] = useState([]);
   const [feature, setFeature] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
+    setIsLoading(true);
     instance
       .get("outingpackages")
       .then((res) => {
+        setIsLoading(false);
         setData(res.data.packages);
       })
       .catch((err) => {
+        setIsLoading(false);
         console.log(err);
       });
   }, []);
   const Delete = (id) => {
     alert("Delete Package");
-    instance.post(`admin/deleteoutingpackage/${id}`).then((res)=>{window.location.reload()})
+    setIsLoading(true);
+    instance
+      .post(`admin/deleteoutingpackage/${id}`)
+      .then((res) => {
+        setIsLoading(false);
+        window.location.reload();
+      })
+      .catch((err) => {
+        setIsLoading(false);
+      });
   };
   const ToggleModal = () => {
     setModal(!modal);
@@ -38,15 +52,25 @@ const Packages = () => {
     setFeature("");
   };
   const AddNewPackage = (e) => {
+    setIsLoading(true);
     e.preventDefault();
-    instance.post("admin/addoutingpackage", {
-      title,
-      price,
-      items,
-    }).then((res)=>{window.location.reload()});
+    instance
+      .post("admin/addoutingpackage", {
+        title,
+        price,
+        items,
+      })
+      .then((res) => {
+        setIsLoading(false);
+        window.location.reload();
+      })
+      .catch((err) => {
+        setIsLoading(false);
+      });
   };
   return (
     <div className={style.packages}>
+      {isLoading && <div className={style.overlay}></div>}
       <ModalWrapper isOpen={modal} toggle={ToggleModal}>
         {openAddNew && (
           <div>
@@ -90,7 +114,7 @@ const Packages = () => {
                 </ol>
               )}
               <div>
-                <button type="submit">Submit</button>
+                <button type="submit" disabled={(title&&price&&items.length>0)?false:true}>Submit</button>
               </div>
             </form>
           </div>
@@ -111,7 +135,13 @@ const Packages = () => {
             </ol>
             <div>
               {/* <button>Edit</button> */}
-               <button onClick={()=>{Delete(item._id)}}>Delete</button>
+              <button
+                onClick={() => {
+                  Delete(item._id);
+                }}
+              >
+                Delete
+              </button>
             </div>
           </div>
         );

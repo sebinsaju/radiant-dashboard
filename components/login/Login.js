@@ -8,7 +8,7 @@ import style from "./Login.module.scss";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {login,user} = useContext(AuthContext);
+  const {login,user,error} = useContext(AuthContext);
   const handleSubmit = (e) => {
     e.preventDefault();
     login(email,password);
@@ -27,6 +27,7 @@ const Login = () => {
             }}
           />
           <Input placeholder="password" type="password" value={password} onChange={(e)=>{setPassword(e.target.value)}}/>
+          {error&&<div style={{color:"red"}}>{error}</div>}
           <button type="submit">Login</button>
         </form>
       </div>

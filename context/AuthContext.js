@@ -5,29 +5,35 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState({});
+  const [error,setError] = useState("");
   const login = (email, password) => {
     instance
       .post("/admin/login", { email, password })
       .then((res) => {
         localStorage.setItem("Token", res.data.token);
         setUser(res.data.token);
+        setError("")
       })
       .catch((err) => {
-        console.log(err);
+        setError(err.response.data.message)
       });
   };
   const Logout = () => {
     setUser('');
-    localStorage.getItem('Key')
+    localStorage.clear();
   }
   const isLoggedIn = () => {
-    setUser(localStorage.getItem('Token'));
+    if(localStorage.getItem('Token')){
+      setUser(localStorage.getItem('Token'));
+    }else{
+      setUser();
+    }
   };
   useEffect(()=>{
     isLoggedIn()
   },[])
   return (
-    <AuthContext.Provider value={{ login, user ,Logout }}>
+    <AuthContext.Provider value={{ login, user ,Logout ,error}}>
       {children}
     </AuthContext.Provider>
   );

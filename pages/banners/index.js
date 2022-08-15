@@ -11,16 +11,18 @@ const Bannners = () => {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [image, setImage] = useState("");
-  const[imageUrl,setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
+    setIsLoading(true);
     instance
       .get("banners")
       .then((res) => {
-        console.log(res.data.banners);
+        setIsLoading(false);
         setData(res.data.banners);
       })
       .catch((err) => {
-        console.log(err);
+        setIsLoading(false);
       });
   }, []);
   const toggleModal = () => {
@@ -38,34 +40,45 @@ const Bannners = () => {
       .post("https://api-radiant.herokuapp.com/api/v1/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization:
-            `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((res) => res.data.picture && setImageUrl(res.data.picture))
       .catch((err) => {
-        console.log(err);
       });
   }, [image]);
   const imageSubmit = (e) => {
     setImage(e.target.files[0]);
   };
   const addNew = () => {
-    setModal(true)
+    setModal(true);
   };
   const formSubmit = (e) => {
+    setIsLoading(true)
     e.preventDefault();
-    instance.post('admin/addbanner',{
-      title:name,
-      image:imageUrl
-    }).then((res)=>{window.location.reload()})
+    instance
+      .post("admin/addbanner", {
+        title: name,
+        image: imageUrl,
+      })
+      .then((res) => {
+        setIsLoading(false)
+        window.location.reload();
+      }).catch((err)=>{
+        setIsLoading(false)
+      });
   };
-  const deleteBanner = (id)=>{
-    alert("Delete image")
-instance.post(`admin/deletebanner/${id}`).then((res)=>{window.location.reload()})
-  }
+  const deleteBanner = (id) => {
+    alert("Delete image");
+    setIsLoading(true)
+    instance.post(`admin/deletebanner/${id}`).then((res) => {
+      setIsLoading(false)
+      window.location.reload();
+    }).catch((err)=>{setIsLoading(false)});
+  };
   return (
     <div>
+      {isLoading && <div className={style.overlay}></div>}
       <ModalWrapper isOpen={modal} toggle={toggleModal}>
         <form onSubmit={formSubmit}>
           <Input
@@ -76,7 +89,7 @@ instance.post(`admin/deletebanner/${id}`).then((res)=>{window.location.reload()}
             }}
           />
           <input type="file" onChange={imageSubmit} />
-          <button type="submit">Submit</button>
+          <button type="submit" disabled={(imageUrl&&name)?false:true}>Submit</button>
           {error && <div style={{ color: "red" }}>{error}</div>}
         </form>
       </ModalWrapper>
@@ -91,7 +104,13 @@ instance.post(`admin/deletebanner/${id}`).then((res)=>{window.location.reload()}
             }
             return (
               <div className={style.image_wrapper} key={index}>
-                <button onClick={()=>{deleteBanner(item._id)}}>Delete</button>
+                <button
+                  onClick={() => {
+                    deleteBanner(item._id);
+                  }}
+                >
+                  Delete
+                </button>
                 <img src={item.image} alt={item.name} />
               </div>
             );

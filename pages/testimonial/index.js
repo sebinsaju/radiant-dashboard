@@ -23,7 +23,7 @@ const Testimonial = () => {
         setLoading(false)
       })
       .catch((err) => {
-        console.log(err);
+        setLoading(false)
       });
   }, []);
   const toggleModal = () => {
@@ -38,7 +38,6 @@ const Testimonial = () => {
   }
 
   useEffect(() => {
-    setLoading(true)
     setImage(image);
     const formData = new FormData();
     formData.append("image", image);
@@ -50,13 +49,12 @@ const Testimonial = () => {
             `Bearer ${token}`,
         },
       })
-      .then((res) => res.data.picture && setImageUrl(res.data.picture),setLoading(false))
+      .then((res) => res.data.picture && setImageUrl(res.data.picture))
       .catch((err) => {
         console.log(err);
       });
   }, [image]);
   const imageSubmit = (e) => {
-    setLoading(true)
     setImage(e.target.files[0]);
   };
   const deleteTestimonial = (id) => {
@@ -67,17 +65,17 @@ const Testimonial = () => {
     });
   };
   const formSubmit = (e) => {
-    e.preventDefault();
     setLoading(true)
+    e.preventDefault();
     instance.post("admin/addtestimonial", {
       name,
       content,
       image: imageUrl,
-    }).then((res)=>{window.location.reload(),setLoading(false)}).catch((err)=>{console.log(err),setError(err.response.data.message)},setLoading(false));
+    }).then((res)=>{setLoading(false) ,window.location.reload()}).catch((err)=>{setError(err.response.data.message)},setLoading(false));
   };
   return (
     <div>
-      {loading&&<div className={style.overlay}>jodjoho</div>}
+      {loading&&<div className={style.overlay}></div>}
       <ModalWrapper isOpen={modal} toggle={toggleModal}>
         <form onSubmit={formSubmit}>
           <Input
@@ -95,7 +93,7 @@ const Testimonial = () => {
             }}
           />
           <input type="file" onChange={imageSubmit} />
-          <button type="submit">Submit</button>
+          <button type="submit" disabled={(imageUrl&&name&&content)?false:true}>Submit</button>
           {error&&<div style={{color:"red"}}>{error}</div>}
         </form>
       </ModalWrapper>
